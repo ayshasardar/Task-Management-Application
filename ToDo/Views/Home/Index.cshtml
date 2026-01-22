@@ -67,6 +67,29 @@
                     }
                 </tbody>
             </table>
+            @if (Model.TotalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination">
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-page="@i"
+                                   asp-route-FilterVm.Category="@Model.FilterVm.Category"
+                                   asp-route-FilterVm.Due="@Model.FilterVm.Due"
+                                   asp-route-FilterVm.Status="@Model.FilterVm.Status">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </nav>
+            }
+
         </form>
         <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
             <a asp-action="Add" class="btn btn-primary" >Add New Task</a>

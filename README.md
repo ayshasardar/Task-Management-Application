@@ -14,4 +14,8 @@ A full-stack MVC Task Management application built with ASP .Net Core
 - Backend: ASP .Net Core 9
 - Database: SQL Server
 
-## Project Structure
+### Pagination
+- Implemented server-side pagination using EF Core
+- Pagination works seamlessly with existing filters
+- Page state is preserved using query-string parameters
+- Improves performance and user experience for large task lists

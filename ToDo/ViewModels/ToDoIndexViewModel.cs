@@ -17,5 +17,9 @@ namespace ToDoDemo.ViewModels
         public IEnumerable<Category> Categories { get; set; }= new List<Category>();
         public IEnumerable<Status> Statuses { get; set; }= new List<Status>();
         public Dictionary<string, string> DueFilters { get; set;}= Filters.DueFilterValues;
+        
+        //Pagination
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
     }
 }

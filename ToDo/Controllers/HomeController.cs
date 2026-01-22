@@ -14,8 +14,10 @@ namespace ToDoDemo.Controllers
             this.context = _context;
         }
 
-        public IActionResult Index(ToDoFilterViewModel filterVm)
+        public IActionResult Index(ToDoFilterViewModel filterVm, int page = 1)
         {
+            const int pageSize = 5;
+
             // Safety (if user manually edits URL)
             filterVm ??= new ToDoFilterViewModel();
 
@@ -53,7 +55,17 @@ namespace ToDoDemo.Controllers
 
                 }
             }
-            var tasks = query.OrderBy(t => t.DueDate).ToList();
+
+            // Pagination calculation
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var tasks = query
+                .OrderBy(t => t.DueDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            //var tasks = query.OrderBy(t => t.DueDate).ToList();
 
 
             var vm = new ToDoIndexViewModel
@@ -63,6 +75,8 @@ namespace ToDoDemo.Controllers
                 Categories = context.Categories.ToList(),
                 Statuses = context.Statuses.ToList(),
                 ToDos = tasks,
+                CurrentPage = page,
+                TotalPages = totalPages
             };
 
             return View(vm);
