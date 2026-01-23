@@ -8,12 +8,30 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ToDo.styles.css" asp-append-version="true" />
+    <style>
+        .pagination .page-item.active .page-link {
+            color: grey; 
+            background-color: white;
+            border-color: grey;
+        }
+
+        .pagination .page-item .page-link {
+            color: grey;
+        }
+    </style>
 </head>
+
 <body>
     
     <div class="container">
-        <header class="bg-primary text-white text-center">
-            <h1 class="m-3 p-3">My Tasks</h1>
+        <header class="">
+            <nav class="navbar navbar-dark bg-dark shadow-sm mb-4">
+                <div class="container-fluid">
+                    <span class="navbar-brand fw-semibold">
+                        Task Management System
+                    </span>
+                </div>
+            </nav>
         </header>
         <main>
             @RenderBody()

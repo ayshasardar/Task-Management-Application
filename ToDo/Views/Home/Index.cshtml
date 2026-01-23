@@ -4,96 +4,130 @@
 
 <div class="row">
     <div class="col-md-2">
-        @* <form action="Filter" method="post"> *@
-        <form asp-controller="Home" asp-action="Index" method="get">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">
+                Filters
+            </div>
+            <div class="card-body">
+                <form asp-controller="Home" asp-action="Index" method="get">
 
-            <div class="mb-3">
-                <label class="form-label">Category</label>
-                <select asp-for="FilterVm.Category" class="form-select"
-                        asp-items="@(new SelectList(Model.Categories, "CategoryId", "Name", Model.Filters.CategoryId))">
-                    <option value="all">All</option>
-                </select>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select asp-for="FilterVm.Category" class="form-select"
+                                asp-items="@(new SelectList(Model.Categories, "CategoryId", "Name", Model.Filters.CategoryId))">
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Due</label>
+                        <select asp-for="FilterVm.Due" class="form-select"
+                                asp-items="@(new SelectList(Model.DueFilters, "Key", "Value", Model.Filters.Due))">
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select asp-for="FilterVm.Status" class="form-select"
+                                asp-items="@(new SelectList(Model.Statuses, "StatusId", "Name", Model.Filters.StatusId))">
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+                    </div>
+                    <div class="mb-3">
+                        <a asp-action="Index" asp-route-id="" class="btn btn-outline-secondary w-100">Clear</a>
+                    </div>
+                </form>
+
             </div>
-            <div class="mb-3">
-                <label class="form-label">Due</label>
-                <select asp-for="FilterVm.Due" class="form-select"
-                        asp-items="@(new SelectList(Model.DueFilters, "Key", "Value", Model.Filters.Due))">
-                    <option value="all">All</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Status</label>
-                <select asp-for="FilterVm.Status" class="form-select"
-                        asp-items="@(new SelectList(Model.Statuses, "StatusId", "Name", Model.Filters.StatusId))">
-                    <option value="all">All</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
-        </form>
+        </div>
     </div>
     <div class="col-md-10">
-        <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
-            <table class="table table-bordered table-striped mt-2">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th class="w-25"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (ToDo task in Model.ToDos)
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">
+                Tasks
+            </div>
+            <div class="card-body">
+                <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th class="w-25"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ToDo task in Model.ToDos)
+                            {
+                                string overdue = task.Overdue ? "table-warning" : "";
+                                <tr>
+                                    <td>@task.Description</td>
+                                    <td>@task.Category.Name</td>
+                                    <td class="text-muted">@task.DueDate?.ToShortDateString()</td>
+                                    <td class="@overdue">@task.Status.Name</td>
+                                    <td>
+                                        @if (task.StatusId == "open")
+                                        {
+                                            <button type="submit" class="btn btn-outline-success btn-sm"
+                                                    name="@nameof(ToDo.Id)" value="@task.Id">
+                                                Mark Completed
+                                            </button>
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @* previous and next btns are not working in nav bar - will work on it later *@
+                    @if (Model.TotalPages > 1)
                     {
-                        string overdue = task.Overdue ? "bg-warning" : "";
-                        <tr>
-                            <td>@task.Description</td>
-                            <td>@task.Category.Name</td>
-                            <td class="@overdue">@task.DueDate?.ToShortDateString()</td>
-                            <td class="@overdue">@task.Status.Name</td>
-                            <td>
-                                @if (task.StatusId == "open")
+                        <nav aria-label="Page navigation example" style="color:black;">
+                            <ul class="pagination">
+                                @* <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li> *@
+                                @for (int i = 1; i <= Model.TotalPages; i++)
                                 {
-                                    <button type="submit" class="btn btn-primary btn-sm" 
-                                    name="@nameof(ToDo.Id)" value="@task.Id">
-                                    Mark Completed
-                                    </button>
+                                    
+                                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                        <a class="page-link"
+                                           asp-action="Index"
+                                           asp-route-page="@i"
+                                           asp-route-FilterVm.Category="@Model.FilterVm.Category"
+                                           asp-route-FilterVm.Due="@Model.FilterVm.Due"
+                                           asp-route-FilterVm.Status="@Model.FilterVm.Status">
+                                            @i
+                                        </a>
+                                    </li>
+                                    
                                 }
-                            </td>
-                            
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            @if (Model.TotalPages > 1)
-            {
-                <nav>
-                    <ul class="pagination">
+                               @*  <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li> *@
+                            </ul>
+                        </nav>
+@*                         
+ *@                    }
 
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link"
-                                   asp-action="Index"
-                                   asp-route-page="@i"
-                                   asp-route-FilterVm.Category="@Model.FilterVm.Category"
-                                   asp-route-FilterVm.Due="@Model.FilterVm.Due"
-                                   asp-route-FilterVm.Status="@Model.FilterVm.Status">
-                                    @i
-                                </a>
-                            </li>
-                        }
+                </form>
+                <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+                    <a asp-action="Add" class="btn btn-success">Add New Task</a>
+                    <button type="submit" class="btn btn-danger">Delete Completed Task</button>
+                </form>
+            </div>
+        </div>
 
-                    </ul>
-                </nav>
-            }
 
-        </form>
-        <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
-            <a asp-action="Add" class="btn btn-primary" >Add New Task</a>
-            <button type="submit" class="btn btn-primary">Delete Completed Task</button>
-        </form>
     </div>
 </div>
