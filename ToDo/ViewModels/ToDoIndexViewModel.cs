@@ -12,6 +12,9 @@ namespace ToDoDemo.ViewModels
         public Filters Filters { get; set; } = new Filters("all-all-all");
         public ToDoFilterViewModel FilterVm { get; set; } = new();
 
+        //Sorting
+        public ToDoSortViewModel SortVm { get; set; } = new();
+
 
         //Dropdown Data - Replacing ViewBags
         public IEnumerable<Category> Categories { get; set; }= new List<Category>();

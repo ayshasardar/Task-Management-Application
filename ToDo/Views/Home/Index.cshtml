@@ -55,7 +55,19 @@
                             <tr>
                                 <th>Description</th>
                                 <th>Category</th>
-                                <th>Due Date</th>
+                                <th>
+                                    <a asp-action="Index"
+                                       asp-route-sortVm.SortBy="duedate"
+                                       asp-route-sortVm.Direction="@Model.SortVm.ToggleDirection"
+                                       asp-route-page="@Model.CurrentPage"
+                                       asp-route-FilterVm.Category="@Model.FilterVm.Category"
+                                       asp-route-FilterVm.Due="@Model.FilterVm.Due"
+                                       asp-route-FilterVm.Status="@Model.FilterVm.Status"
+                                       class="text-decoration-none text-dark">
+                                        Due Date
+                                    </a>
+                                </th>
+
                                 <th>Status</th>
                                 <th class="w-25"></th>
                             </tr>
@@ -96,20 +108,22 @@
                                 </li> *@
                                 @for (int i = 1; i <= Model.TotalPages; i++)
                                 {
-                                    
+
                                     <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                                         <a class="page-link"
                                            asp-action="Index"
                                            asp-route-page="@i"
+                                           asp-route-sortVm.SortBy="@Model.SortVm.SortBy"
+                                           asp-route-sortVm.Direction="@Model.SortVm.Direction"
                                            asp-route-FilterVm.Category="@Model.FilterVm.Category"
                                            asp-route-FilterVm.Due="@Model.FilterVm.Due"
                                            asp-route-FilterVm.Status="@Model.FilterVm.Status">
                                             @i
                                         </a>
                                     </li>
-                                    
+
                                 }
-                               @*  <li class="page-item">
+                                @*  <li class="page-item">
                                     <a class="page-link" href="#" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                         <span class="sr-only">Next</span>
@@ -117,17 +131,17 @@
                                 </li> *@
                             </ul>
                         </nav>
-@*                         
+                        @*                         
  *@                    }
 
-                </form>
-                <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
-                    <a asp-action="Add" class="btn btn-success">Add New Task</a>
-                    <button type="submit" class="btn btn-danger">Delete Completed Task</button>
-                </form>
+                    </form>
+                    <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+                        <a asp-action="Add" class="btn btn-success">Add New Task</a>
+                        <button type="submit" class="btn btn-danger">Delete Completed Task</button>
+                    </form>
+                </div>
             </div>
+
+
         </div>
-
-
     </div>
-</div>
