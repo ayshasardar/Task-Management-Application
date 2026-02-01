@@ -6,6 +6,8 @@
         public string Due { get; set; } = "all";
         public string Status { get; set; } = "all";
 
+        public string SortBy { get; set; } = "duedate";
+
         public string FilterString => $"{Category}-{Due}-{Status}";
     }
 

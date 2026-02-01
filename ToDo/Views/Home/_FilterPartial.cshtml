@@ -1,0 +1,50 @@
+﻿@model ToDoDemo.ViewModels.ToDoFilterPartialViewModel
+
+<form asp-action="Index" method="get" class="card shadow-sm p-3">
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select asp-for="FilterVm.Category"
+                asp-items="@(new SelectList(Model.Categories, "CategoryId", "Name"))"
+                class="form-select">
+            <option value="all">All</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Due</label>
+        <select asp-for="FilterVm.Due"
+                asp-items="@(new SelectList(Model.DueFilters, "Key", "Value"))"
+                class="form-select">
+            <option value="all">All</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select asp-for="FilterVm.Status"
+                asp-items="@(new SelectList(Model.Statuses, "StatusId", "Name"))"
+                class="form-select">
+            <option value="all">All</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Sort By</label>
+        <select asp-for="FilterVm.SortBy" class="form-select">
+            <option value="duedate">Due Date</option>
+            <option value="category">Category</option>
+            <option value="status">Status</option>
+        </select>
+    </div>
+
+    @* <button type="submit" class="btn btn-dark w-100">
+        Apply Filters
+    </button> *@
+    <div class="mb-3">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+    <div class="mb-3">
+        <a asp-action="Index" asp-route-id="" class="btn btn-secondary w-100">Clear</a>
+    </div>
+</form>

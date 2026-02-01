@@ -14,13 +14,13 @@ namespace ToDoDemo.Controllers
             this.context = _context;
         }
 
-        public IActionResult Index(ToDoFilterViewModel filterVm, ToDoSortViewModel sortVm, int page = 1)
+        public IActionResult Index(ToDoFilterViewModel filterVm, int page = 1)
         {
             const int pageSize = 5;
 
             // Safety (if user manually edits URL)
             filterVm ??= new ToDoFilterViewModel();
-            sortVm??= new ToDoSortViewModel();
+            //sortVm??= new ToDoSortViewModel();
 
             var filters = new Filters(filterVm.FilterString);
 
@@ -57,20 +57,29 @@ namespace ToDoDemo.Controllers
                 }
             }
 
-            //Sorting
-            query = sortVm.SortBy switch
+            //OLD Sorting - when sorting was handled by header click
+            //query = sortVm.SortBy switch
+            //{
+            //    "category" => sortVm.Direction == "asc"
+            //        ? query.OrderBy(t => t.Category.Name)
+            //        : query.OrderByDescending(t => t.Category.Name),
+
+            //    "status" => sortVm.Direction == "asc"
+            //        ? query.OrderBy(t => t.Status.Name)
+            //        : query.OrderByDescending(t => t.Status.Name),
+
+            //    _ => sortVm.Direction == "asc"
+            //        ? query.OrderBy(t => t.DueDate)
+            //        : query.OrderByDescending(t => t.DueDate)
+            //};
+
+            // Sorting
+            
+            query = filterVm.SortBy switch
             {
-                "category" => sortVm.Direction == "asc"
-                    ? query.OrderBy(t => t.Category.Name)
-                    : query.OrderByDescending(t => t.Category.Name),
-
-                "status" => sortVm.Direction == "asc"
-                    ? query.OrderBy(t => t.Status.Name)
-                    : query.OrderByDescending(t => t.Status.Name),
-
-                _ => sortVm.Direction == "asc"
-                    ? query.OrderBy(t => t.DueDate)
-                    : query.OrderByDescending(t => t.DueDate)
+                "category" => query.OrderBy(t => t.Category.Name),
+                "status" => query.OrderBy(t => t.Status.Name),
+                _ => query.OrderBy(t => t.DueDate)
             };
 
             // Pagination calculation
@@ -91,7 +100,7 @@ namespace ToDoDemo.Controllers
                 Categories = context.Categories.ToList(),
                 Statuses = context.Statuses.ToList(),
                 ToDos = tasks,
-                SortVm = sortVm,
+                //SortVm = sortVm,
                 CurrentPage = page,
                 TotalPages = totalPages
             };
