@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoDemo.Models;
+using ToDoDemo.Services.Implementations;
+using ToDoDemo.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddControllersWithViews();
 
 //Add EF core DI
 builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoContext")));
+builder.Services.AddScoped<IToDoService, ToDoService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
