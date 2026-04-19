@@ -58,7 +58,7 @@ namespace ToDoDemo.Controllers
         [HttpPost]
         public IActionResult MarkComplete([FromRoute] string id, ToDo selected)
         {
-            _toDoService.MarkComplete(selected);
+            //_toDoService.MarkComplete(selected);
             return RedirectToAction("Index", new { ID = id });
         }
         [HttpPost]
@@ -66,6 +66,12 @@ namespace ToDoDemo.Controllers
         {
             _toDoService.DeleteComplete();
 
+            return RedirectToAction("Index", new { ID = id });
+        }
+        [HttpPost]
+        public IActionResult Delete([FromRoute] string id, ToDo selected)
+        {
+            _toDoService.Delete(selected);
             return RedirectToAction("Index", new { ID = id });
         }
     }

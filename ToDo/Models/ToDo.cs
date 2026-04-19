@@ -20,5 +20,9 @@ namespace ToDoDemo.Models
         [ValidateNever]
         public Status Status { get; set; } = null!;
         public bool Overdue => StatusId == "open" && DueDate<= DateTime.Today;
+        // Added soft Delete Feature
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+        public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
     }
 }

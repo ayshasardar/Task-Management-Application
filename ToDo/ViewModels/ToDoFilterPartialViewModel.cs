@@ -8,6 +8,7 @@ namespace ToDoDemo.ViewModels
 
         public IEnumerable<Category> Categories { get; set; } = new List<Category>();
         public IEnumerable<Status> Statuses { get; set; } = new List<Status>();
+        public IEnumerable<PriorityLevel> Priorities { get; set; } = new List<PriorityLevel>();
         public Dictionary<string, string> DueFilters { get; set; } = Filters.DueFilterValues;
     }
 }

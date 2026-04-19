@@ -1,4 +1,6 @@
-﻿namespace ToDoDemo.ViewModels
+﻿using ToDoDemo.Models;
+
+namespace ToDoDemo.ViewModels
 {
     public class ToDoFilterViewModel
     {
@@ -9,6 +11,8 @@
         public string SortBy { get; set; } = "duedate";
 
         public string FilterString => $"{Category}-{Due}-{Status}";
+
+        public PriorityLevel Priority { get; set; } = PriorityLevel.All;
     }
 
 }

@@ -11,8 +11,10 @@ namespace ToDoDemo.Services.Interfaces
         public IEnumerable<Category> GetCategories();
         public IEnumerable<Status> GetStatuses();
 
-        public void MarkComplete(ToDo selected);
+        //public void MarkComplete(ToDo selected);
+        public bool MarkComplete(int id);
         public void DeleteComplete();
+        public void Delete(ToDo selected);
 
     }
 }

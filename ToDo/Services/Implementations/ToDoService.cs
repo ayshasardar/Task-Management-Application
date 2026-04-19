@@ -26,6 +26,9 @@ namespace ToDoDemo.Services.Implementations
             IEnumerable<ToDo> query = _context.ToDos
                                     .Include(t => t.Category)
                                     .Include(t => t.Status);
+            //Exclude deleted records
+            query = query.Where(t => !t.IsDeleted);
+
             if (filters.HasCategory)
             {
                 query = query.Where(t => t.CategoryId == filters.CategoryId);
@@ -53,6 +56,21 @@ namespace ToDoDemo.Services.Implementations
 
                 }
             }
+            //Priority
+            if (filterVm.Priority == PriorityLevel.High)
+            {
+                query = query.Where(t => t.Priority == PriorityLevel.High);
+            }
+            else if (filterVm.Priority == PriorityLevel.Medium)
+            {
+                query = query.Where(t => t.Priority == PriorityLevel.Medium);
+
+            }
+            else if (filterVm.Priority == PriorityLevel.Low)
+            {
+                query = query.Where(t => t.Priority == PriorityLevel.Low);
+
+            }
 
             //OLD Sorting - when sorting was handled by header click
             //query = sortVm.SortBy switch
@@ -74,6 +92,7 @@ namespace ToDoDemo.Services.Implementations
 
             query = filterVm.SortBy switch
             {
+                "priority" => query.OrderByDescending(t => t.Priority),
                 "category" => query.OrderBy(t => t.Category.Name),
                 "desc" => query.OrderBy(t => t.Description),
                 _ => query.OrderBy(t => t.DueDate)
@@ -96,6 +115,7 @@ namespace ToDoDemo.Services.Implementations
                 FilterVm = filterVm,
                 Categories = _context.Categories.ToList(),
                 Statuses = _context.Statuses.ToList(),
+                Priorities = Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>(),
                 ToDos = tasks,
                 //SortVm = sortVm,
                 CurrentPage = page,
@@ -105,12 +125,8 @@ namespace ToDoDemo.Services.Implementations
         }
         public AddViewModel Add()
         {
-            //ViewBag.Categories = context.Categories.ToList();
-            //ViewBag.Statuses = context.Statuses.ToList();
 
-            //replacing View bags with View Models
-
-            var task = new ToDo { StatusId = "open" };
+            var task = new ToDo { StatusId = "open", Priority = PriorityLevel.Medium };
             var vm = new AddViewModel
             {
                 Categories = _context.Categories.ToList(),
@@ -136,25 +152,45 @@ namespace ToDoDemo.Services.Implementations
 
         }
 
-        public void MarkComplete(ToDo selected) 
+        //old method - now using new one to update using fetch API (AJAX)
+        //public void MarkComplete(ToDo selected)
+        //{
+        //    var selectedToDo = _context.ToDos.Find(selected.Id);
+        //    if (selectedToDo != null)
+        //    {
+        //        selectedToDo.StatusId = "close";
+        //        _context.SaveChanges();
+        //    }
+        //}
+        public bool MarkComplete(int id)
         {
-            var selectedToDo = _context.ToDos.Find(selected.Id);
-            if (selectedToDo != null)
-            {
-                selectedToDo.StatusId = "close";
-                _context.SaveChanges();
-            }
+            var task = _context.ToDos.Find(id);
+            if (task == null) return false;
+
+            task.StatusId = "close";
+            _context.SaveChanges();
+
+            return true;
         }
-        public void DeleteComplete() 
+        public void DeleteComplete()
         {
             var ToDelete = _context.ToDos.Where(t => t.StatusId == "close").ToList();
 
             foreach (var task in ToDelete)
             {
-                _context.ToDos.Remove(task);
+                //_context.ToDos.Remove(task);
+                task.IsDeleted = true;
             }
             _context.SaveChanges();
         }
-
+        public void Delete(ToDo selected)
+        {
+            var selectedToDo = _context.ToDos.Find(selected.Id);
+            if (selectedToDo != null)
+            {
+                selectedToDo.IsDeleted = true;
+                _context.SaveChanges();
+            }
+        }
     }
 }

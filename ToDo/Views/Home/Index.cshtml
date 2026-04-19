@@ -10,7 +10,8 @@
                      FilterVm = Model.FilterVm,
                      Categories = Model.Categories,
                      Statuses = Model.Statuses,
-                     DueFilters = Model.DueFilters
+                     DueFilters = Model.DueFilters,
+                     Priorities = Model.Priorities
                  }" />
         @* below html for filters is now moved to partial view *@
         @* <div class="card shadow-sm">
@@ -58,6 +59,7 @@
                 Tasks
             </div>
             <div class="card-body">
+                @*  *@
                 <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
                     <table class="table table-hover align-middle">
                         <thead>
@@ -79,7 +81,9 @@
                                 </th> *@
 
                                 <th>Status</th>
-                                <th class="w-25"></th>
+                                <th>Priority</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,17 +94,45 @@
                                     <td>@task.Description</td>
                                     <td>@task.Category.Name</td>
                                     <td class="text-muted">@task.DueDate?.ToShortDateString()</td>
-                                    <td class="@overdue">@task.Status.Name</td>
+                                    <td class="@overdue status-cell">@task.Status.Name</td>
+                                    <td>
+                                        <span class="badge @(task.Priority == PriorityLevel.High ? "bg-danger" : task.Priority == PriorityLevel.Medium ? "bg-warning" : "bg-secondary")">
+                                            @task.Priority
+                                        </span>
+                                    </td>
                                     <td>
                                         @if (task.StatusId == "open")
                                         {
-                                            <button type="submit" class="btn btn-outline-success btn-sm"
-                                                    name="@nameof(ToDo.Id)" value="@task.Id">
-                                                Mark Completed
+                                            @*When we use fetch(), the browser does NOT submit a form, so the MVC action is not triggered at all.  
+                                                page reload only occurs if i have btn type submit
+                                            <button type = "submit" class="btn btn-outline-success btn-sm mark-complete-btn"
+                                                    name="@nameof(ToDo.Id)" value="@task.Id" title="Mark Completed">
+                                                <i class="bi-solid bi-check-circle"></i>
+                                            </button> *@
+                                            <button type="button"
+                                                    class="btn btn-outline-success btn-sm mark-complete-btn"
+                                                    data-id="@task.Id">
+                                                <i class="bi-solid bi-check-circle"></i>
                                             </button>
+
                                         }
                                     </td>
 
+                                    <td>
+                                        <form asp-action="Delete"
+                                              asp-route-id="@Model.Filters.FilterString"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this task?');">
+
+                                            <button type="submit" name="@nameof(ToDo.Id)" value="@task.Id"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+
+
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -154,3 +186,35 @@
 
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".mark-complete-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+
+                    const taskId = this.getAttribute("data-id");
+                    const row = this.closest("tr");
+                    debugger;
+                    fetch(`/api/tasks/complete/${taskId}`, {
+                        method: "POST"
+                    })
+                    .then(data => {
+                        const row = this.closest("tr");
+
+                        // Update status text
+                        const statusCell = row.querySelector(".status-cell");
+                        if (statusCell) {
+                            statusCell.innerText = "Completed";
+                        }
+
+                        //Remove the button (same effect as Razor)
+                        this.remove();
+                    })
+                    .catch(err => {
+                        alert("Error marking task complete");
+                    });
+                });
+            });
+
+        });
+    </script>

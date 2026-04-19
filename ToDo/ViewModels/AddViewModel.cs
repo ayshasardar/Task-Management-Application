@@ -8,5 +8,7 @@ namespace ToDoDemo.ViewModels
         public IEnumerable<Category> Categories { get; set; } = new List<Category>();
         public IEnumerable<Status> Statuses { get; set; } = new List<Status>();
         public ToDo ToDo { get; set; } = new ToDo();
+        public IEnumerable<PriorityLevel> Priorities =>
+        Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>();
     }
 }
