@@ -1,0 +1,11 @@
+﻿Description,DueDays,Category,Priority
+"Finish urgent report",1,Work,High
+"Prepare presentation",2,Work,High
+"Buy groceries",3,Personal,Medium
+"Pay bills",2,Personal,High
+"Watch movie",7,Leisure,Low
+"Clean room",5,Personal,Low
+"Team meeting",1,Work,High
+"Read book",6,Leisure,Low
+"Submit assignment",1,Study,High
+"Practice coding",3,Study,Medium

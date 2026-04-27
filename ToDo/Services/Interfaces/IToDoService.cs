@@ -15,6 +15,7 @@ namespace ToDoDemo.Services.Interfaces
         public bool MarkComplete(int id);
         public void DeleteComplete();
         public void Delete(ToDo selected);
+        public string PredictPriority(ToDo task);
 
     }
 }

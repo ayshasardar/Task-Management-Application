@@ -38,8 +38,18 @@ namespace ToDoDemo.Controllers
         {
             if (ModelState.IsValid)
             {
+                // ML prediction
+                var predicted = _toDoService.PredictPriority(vm.ToDo);
+
+                // Optional: auto-assign OR just log/show
+                vm.ToDo.Priority = Enum.Parse<PriorityLevel>(predicted);
+
                 _toDoService.AddTask(vm);
+
                 return RedirectToAction("Index");
+
+                //_toDoService.AddTask(vm);
+                //return RedirectToAction("Index");
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Web.Mvc;
+using ToDoDemo.ML.Services;
 using ToDoDemo.Models;
 using ToDoDemo.Services.Interfaces;
 using ToDoDemo.ViewModels;
@@ -10,9 +11,11 @@ namespace ToDoDemo.Services.Implementations
     public class ToDoService : IToDoService
     {
         private readonly ToDoContext _context;
-        public ToDoService(ToDoContext context)
+        private readonly MLPriorityService _mlService;
+        public ToDoService(ToDoContext context, MLPriorityService mlService)
         {
             _context = context;
+            _mlService = mlService;
         }
         public ToDoIndexViewModel Index(ToDoFilterViewModel filterVm, int page, int pageSize)
         {
@@ -191,6 +194,19 @@ namespace ToDoDemo.Services.Implementations
                 selectedToDo.IsDeleted = true;
                 _context.SaveChanges();
             }
+        }
+        public string PredictPriority(ToDo task)
+        {
+            float dueDays = 0;
+
+            if (task.DueDate.HasValue)
+                dueDays = (float)(task.DueDate.Value - DateTime.Today).TotalDays;
+
+            return _mlService.Predict(
+                task.Description,
+                dueDays,
+                task.CategoryId   // OK for now
+            );
         }
     }
 }
