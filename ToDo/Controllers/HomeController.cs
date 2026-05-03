@@ -84,5 +84,29 @@ namespace ToDoDemo.Controllers
             _toDoService.Delete(selected);
             return RedirectToAction("Index", new { ID = id });
         }
+        [HttpGet]
+        //get data to display on EDIT View
+        public IActionResult Edit(int id)
+        {
+            var vm = _toDoService.GetTaskToEdit(id);
+            if (vm.ToDo.Id == 0) 
+                return NotFound();
+
+            return View("Add",vm);
+        }
+        [HttpPost]
+        //Save updated data
+        public IActionResult Edit(AddViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                vm.Categories = _toDoService.GetCategories();
+                vm.Statuses = _toDoService.GetStatuses();
+                return View(vm);
+            }
+
+            _toDoService.UpdateTask(vm);
+            return RedirectToAction("Index");
+        }
     }
 }

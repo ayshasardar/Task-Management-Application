@@ -16,6 +16,8 @@ namespace ToDoDemo.Services.Interfaces
         public void DeleteComplete();
         public void Delete(ToDo selected);
         public string PredictPriority(ToDo task);
+        public void UpdateTask(AddViewModel vm);
+        public AddViewModel GetTaskToEdit(int id);
 
     }
 }

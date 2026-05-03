@@ -154,6 +154,26 @@ namespace ToDoDemo.Services.Implementations
             _context.SaveChanges();
 
         }
+        public void UpdateTask(AddViewModel vm)
+        {
+            _context.ToDos.Update(vm.ToDo);
+            _context.SaveChanges();
+        }
+        public AddViewModel GetTaskToEdit(int id)
+        {
+            var task = _context.ToDos.Find(id);
+            if (task == null)
+                task = new ToDo { Id = 0 };
+
+            var vm = new AddViewModel
+            {
+                ToDo = task,
+                Categories = _context.Categories.ToList(),
+                Statuses = _context.Statuses.ToList()
+            };
+
+            return vm;
+        }
 
         //old method - now using new one to update using fetch API (AJAX)
         //public void MarkComplete(ToDo selected)

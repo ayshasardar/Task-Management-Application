@@ -1,10 +1,11 @@
 ﻿@using ToDoDemo.ViewModels
 @model AddViewModel
 
-<h2>New Task</h2>
+<h2>@(Model.ToDo.Id == 0 ? "New Task" : "Edit Task")</h2>
 
 <div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="AddTask" method="post">
+<form asp-action=@(Model.ToDo.Id == 0 ? "AddTask" : "Edit") method="post">
+    <input type="hidden" asp-for="ToDo.Id" />
     <div class="mb-3">
         <label asp-for="ToDo.Description" class="form-label">Description</label>
         <input asp-for="ToDo.Description" class="form-control" />
@@ -33,6 +34,6 @@
                 asp-items="@(new SelectList(Model.Priorities))">
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary">@(Model.ToDo.Id == 0 ? "Add Task" : "Update Task")</button>
     <a asp-action="Index" class="btn btn-primary">Cancel</a>
 </form>

@@ -60,8 +60,8 @@
             </div>
             <div class="card-body">
                 @*  *@
-                <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
-                    <table class="table table-hover align-middle">
+@*                 <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+ *@                    <table class="table table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>Description</th>
@@ -90,7 +90,9 @@
                             @foreach (ToDo task in Model.ToDos)
                             {
                                 string overdue = task.Overdue ? "table-warning" : "";
-                                <tr>
+                                @* <tr> old tr*@
+                                @* make table row clickable to edit a record *@
+                                <tr class="task-row" data-id="@task.Id" style="cursor:pointer;">
                                     <td>@task.Description</td>
                                     <td>@task.Category.Name</td>
                                     <td class="text-muted">@task.DueDate?.ToShortDateString()</td>
@@ -172,10 +174,9 @@
                                 </li> *@
                             </ul>
                         </nav>
-                        @*                         
- *@                    }
+                    }
 
-                    </form>
+                   @*  </form> *@
                     <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
                         <a asp-action="Add" class="btn btn-success">Add New Task</a>
                         <button type="submit" class="btn btn-danger">Delete Completed Task</button>
@@ -190,14 +191,16 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             document.querySelectorAll(".mark-complete-btn").forEach(btn => {
-                btn.addEventListener("click", function () {
-
+                btn.addEventListener("click", function (e) {
+                    //Role of e.stopPropagation() => Button click → stopPropagation() → event DOES NOT reach row
+                    e.stopPropagation();
                     const taskId = this.getAttribute("data-id");
                     const row = this.closest("tr");
                     debugger;
                     fetch(`/api/tasks/complete/${taskId}`, {
                         method: "POST"
                     })
+                      .then(response => response.json())
                     .then(data => {
                         const row = this.closest("tr");
 
@@ -215,6 +218,18 @@
                     });
                 });
             });
+
+            document.querySelectorAll(".task-row").forEach(row => {
+                row.addEventListener("click", function (e) {
+
+                    // prevent click from buttons (delete / complete)
+                    if (e.target.closest("button")) return;
+
+                    const id = this.getAttribute("data-id");
+                    window.location.href = `/Home/Edit/${id}`;
+                });
+            });
+
 
         });
     </script>
