@@ -60,14 +60,14 @@
             </div>
             <div class="card-body">
                 @*  *@
-@*                 <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+                @*                 <form asp-controller="Home" asp-action="MarkComplete" method="post" asp-route-id="@Model.Filters.FilterString">
  *@                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Due Date</th>
-                                @* <th>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Due Date</th>
+                            @* <th>
                                     <a asp-action="Index"
                                        asp-route-sortVm.SortBy="duedate"
                                        asp-route-sortVm.Direction="@Model.SortVm.ToggleDirection"
@@ -80,156 +80,179 @@
                                     </a>
                                 </th> *@
 
-                                <th>Status</th>
-                                <th>Priority</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (ToDo task in Model.ToDos)
-                            {
-                                string overdue = task.Overdue ? "table-warning" : "";
-                                @* <tr> old tr*@
-                                @* make table row clickable to edit a record *@
-                                <tr class="task-row" data-id="@task.Id" style="cursor:pointer;">
-                                    <td>@task.Description</td>
-                                    <td>@task.Category.Name</td>
-                                    <td class="text-muted">@task.DueDate?.ToShortDateString()</td>
-                                    <td class="@overdue status-cell">@task.Status.Name</td>
-                                    <td>
-                                        <span class="badge @(task.Priority == PriorityLevel.High ? "bg-danger" : task.Priority == PriorityLevel.Medium ? "bg-warning" : "bg-secondary")">
-                                            @task.Priority
-                                        </span>
-                                    </td>
-                                    <td>
-                                        @if (task.StatusId == "open")
-                                        {
-                                            @*When we use fetch(), the browser does NOT submit a form, so the MVC action is not triggered at all.  
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ToDo task in Model.ToDos)
+                        {
+                            string overdue = task.Overdue ? "table-warning" : "";
+                            @* <tr> old tr*@
+                            @* make table row clickable to edit a record *@
+                            <tr class="task-row" data-id="@task.Id" style="cursor:pointer;">
+                                <td>@task.Description</td>
+                                <td>@task.Category.Name</td>
+                                <td class="text-muted">@task.DueDate?.ToShortDateString()</td>
+                                <td class="@overdue status-cell">@task.Status.Name</td>
+                                <td>
+                                    <span class="badge @(task.Priority == PriorityLevel.High ? "bg-danger" : task.Priority == PriorityLevel.Medium ? "bg-warning" : "bg-secondary")">
+                                        @task.Priority
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (task.StatusId == "open")
+                                    {
+                                        @*When we use fetch(), the browser does NOT submit a form, so the MVC action is not triggered at all.  
                                                 page reload only occurs if i have btn type submit
                                             <button type = "submit" class="btn btn-outline-success btn-sm mark-complete-btn"
                                                     name="@nameof(ToDo.Id)" value="@task.Id" title="Mark Completed">
                                                 <i class="bi-solid bi-check-circle"></i>
                                             </button> *@
-                                            <button type="button"
-                                                    class="btn btn-outline-success btn-sm mark-complete-btn"
-                                                    data-id="@task.Id">
-                                                <i class="bi-solid bi-check-circle"></i>
-                                            </button>
+                                        <button type="button" title="Mark Complete"
+                                                class="btn btn-outline-success btn-sm mark-complete-btn"
+                                                data-id="@task.Id">
+                                            <i class="bi-solid bi-check-circle"></i>
+                                        </button>
 
-                                        }
-                                    </td>
+                                    }
+                                </td>
 
-                                    <td>
-                                        <form asp-action="Delete"
-                                              asp-route-id="@Model.Filters.FilterString"
-                                              method="post"
-                                              onsubmit="return confirm('Delete this task?');">
+                                <td>
+                                    <form asp-action="Delete"
+                                          asp-route-id="@Model.Filters.FilterString"
+                                          method="post"
+                                          class="delete-form">
+                                        <input type="hidden" name="Id" value="@task.Id" />
 
-                                            <button type="submit" name="@nameof(ToDo.Id)" value="@task.Id"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger delete-btn"
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
 
 
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    @* previous and next btns are not working in nav bar - will work on it later *@
-                    @if (Model.TotalPages > 1)
-                    {
-                        <nav aria-label="Page navigation example" style="color:black;">
-                            <ul class="pagination">
-                                @* <li class="page-item">
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @* previous and next btns are not working in nav bar - will work on it later *@
+                @if (Model.TotalPages > 1)
+                {
+                    <nav aria-label="Page navigation example" style="color:black;">
+                        <ul class="pagination">
+                            @* <li class="page-item">
                                     <a class="page-link" href="#" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                         <span class="sr-only">Previous</span>
                                     </a>
                                 </li> *@
-                                @for (int i = 1; i <= Model.TotalPages; i++)
-                                {
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
 
-                                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                        <a class="page-link"
-                                           asp-action="Index"
-                                           asp-route-page="@i"
-                                           asp-route-FilterVm.SortBy="@Model.FilterVm.SortBy"
-                                           asp-route-FilterVm.Category="@Model.FilterVm.Category"
-                                           asp-route-FilterVm.Due="@Model.FilterVm.Due"
-                                           asp-route-FilterVm.Status="@Model.FilterVm.Status">
-                                            @i
-                                        </a>
-                                    </li>
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@i"
+                                       asp-route-FilterVm.SortBy="@Model.FilterVm.SortBy"
+                                       asp-route-FilterVm.Category="@Model.FilterVm.Category"
+                                       asp-route-FilterVm.Due="@Model.FilterVm.Due"
+                                       asp-route-FilterVm.Status="@Model.FilterVm.Status">
+                                        @i
+                                    </a>
+                                </li>
 
-                                }
-                                @*  <li class="page-item">
+                            }
+                            @*  <li class="page-item">
                                     <a class="page-link" href="#" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                         <span class="sr-only">Next</span>
                                     </a>
                                 </li> *@
-                            </ul>
-                        </nav>
+                        </ul>
+                    </nav>
+                }
+
+                @*  </form> *@
+                <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
+                    <a asp-action="Add" class="btn btn-success">Add New Task</a>
+                    <button type="submit" class="btn btn-danger">Delete Completed Task</button>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".mark-complete-btn").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                //Role of e.stopPropagation() => Button click → stopPropagation() → event DOES NOT reach row
+                e.stopPropagation();
+                const taskId = this.getAttribute("data-id");
+                const row = this.closest("tr");
+                debugger;
+                fetch(`/api/tasks/complete/${taskId}`, {
+                    method: "POST"
+                })
+                  .then(response => response.json())
+                .then(data => {
+                    const row = this.closest("tr");
+
+                    // Update status text
+                    const statusCell = row.querySelector(".status-cell");
+                    if (statusCell) {
+                        statusCell.innerText = "Completed";
                     }
 
-                   @*  </form> *@
-                    <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
-                        <a asp-action="Add" class="btn btn-success">Add New Task</a>
-                        <button type="submit" class="btn btn-danger">Delete Completed Task</button>
-                    </form>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            document.querySelectorAll(".mark-complete-btn").forEach(btn => {
-                btn.addEventListener("click", function (e) {
-                    //Role of e.stopPropagation() => Button click → stopPropagation() → event DOES NOT reach row
-                    e.stopPropagation();
-                    const taskId = this.getAttribute("data-id");
-                    const row = this.closest("tr");
-                    debugger;
-                    fetch(`/api/tasks/complete/${taskId}`, {
-                        method: "POST"
-                    })
-                      .then(response => response.json())
-                    .then(data => {
-                        const row = this.closest("tr");
-
-                        // Update status text
-                        const statusCell = row.querySelector(".status-cell");
-                        if (statusCell) {
-                            statusCell.innerText = "Completed";
-                        }
-
-                        //Remove the button (same effect as Razor)
-                        this.remove();
-                    })
-                    .catch(err => {
-                        alert("Error marking task complete");
-                    });
+                    //Remove the button (same effect as Razor)
+                    this.remove();
+                    showToast("Task marked as completed");
+                })
+                .catch(err => {
+                showToast("Something went wrong", true);
                 });
             });
-
-            document.querySelectorAll(".task-row").forEach(row => {
-                row.addEventListener("click", function (e) {
-
-                    // prevent click from buttons (delete / complete)
-                    if (e.target.closest("button")) return;
-
-                    const id = this.getAttribute("data-id");
-                    window.location.href = `/Home/Edit/${id}`;
-                });
-            });
-
-
         });
-    </script>
+
+        document.querySelectorAll(".task-row").forEach(row => {
+            row.addEventListener("click", function (e) {
+
+                // prevent click from buttons (delete / complete)
+                if (e.target.closest("button")) return;
+
+                const id = this.getAttribute("data-id");
+                window.location.href = `/Home/Edit/${id}`;
+            });
+        });
+
+
+        let selectedForm = null;
+
+        // Open modal
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                selectedForm = this.closest("form");
+
+                const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                modal.show();
+            });
+        });
+
+        // Confirm delete
+        document.getElementById("confirmDeleteBtn")
+            .addEventListener("click", function () {
+
+                if (selectedForm) {
+                    selectedForm.submit();
+                }
+            });
+
+    });
+</script>

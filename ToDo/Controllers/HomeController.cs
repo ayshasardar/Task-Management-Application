@@ -46,6 +46,9 @@ namespace ToDoDemo.Controllers
 
                 _toDoService.AddTask(vm);
 
+                TempData["ToastMessage"] = "Task added successfully";
+                TempData["ToastType"] = "success";
+
                 return RedirectToAction("Index");
 
                 //_toDoService.AddTask(vm);
@@ -82,6 +85,10 @@ namespace ToDoDemo.Controllers
         public IActionResult Delete([FromRoute] string id, ToDo selected)
         {
             _toDoService.Delete(selected);
+
+            TempData["ToastMessage"] = "Task deleted successfully";
+            TempData["ToastType"] = "success";
+
             return RedirectToAction("Index", new { ID = id });
         }
         [HttpGet]
@@ -106,6 +113,10 @@ namespace ToDoDemo.Controllers
             }
 
             _toDoService.UpdateTask(vm);
+
+            TempData["ToastMessage"] = "Task updated successfully";
+            TempData["ToastType"] = "success";
+
             return RedirectToAction("Index");
         }
     }
