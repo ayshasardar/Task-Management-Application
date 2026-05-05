@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews();
 //Add EF core DI
 builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoContext")));
 builder.Services.AddScoped<IToDoService, ToDoService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddSingleton<MLPriorityService>();//singleton - because model is heavy and should be loaded once
 
 var app = builder.Build();

@@ -12,10 +12,12 @@ namespace ToDoDemo.Services.Implementations
     {
         private readonly ToDoContext _context;
         private readonly MLPriorityService _mlService;
-        public ToDoService(ToDoContext context, MLPriorityService mlService)
+        private readonly ICategoryService _categoryService;
+        public ToDoService(ToDoContext context, MLPriorityService mlService, ICategoryService categoryService)
         {
             _context = context;
             _mlService = mlService;
+            _categoryService = categoryService;
         }
         public ToDoIndexViewModel Index(ToDoFilterViewModel filterVm, int page, int pageSize)
         {
@@ -116,7 +118,7 @@ namespace ToDoDemo.Services.Implementations
             {
                 Filters = filters,
                 FilterVm = filterVm,
-                Categories = _context.Categories.ToList(),
+                Categories = _categoryService.GetAll(),
                 Statuses = _context.Statuses.ToList(),
                 Priorities = Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>(),
                 ToDos = tasks,
@@ -132,7 +134,7 @@ namespace ToDoDemo.Services.Implementations
             var task = new ToDo { StatusId = "open", Priority = PriorityLevel.Medium };
             var vm = new AddViewModel
             {
-                Categories = _context.Categories.ToList(),
+                Categories = _categoryService.GetAll(),//_context.Categories.ToList(),
                 Statuses = _context.Statuses.ToList(),
                 ToDo = task
             };
@@ -140,7 +142,7 @@ namespace ToDoDemo.Services.Implementations
         }
         public IEnumerable<Category> GetCategories()
         {
-            var cat = _context.Categories.ToList();
+            var cat = _categoryService.GetAll();//_context.Categories.ToList();
             return cat;
         }
         public IEnumerable<Status> GetStatuses()
@@ -168,7 +170,7 @@ namespace ToDoDemo.Services.Implementations
             var vm = new AddViewModel
             {
                 ToDo = task,
-                Categories = _context.Categories.ToList(),
+                Categories = _categoryService.GetAll(),
                 Statuses = _context.Statuses.ToList()
             };
 
