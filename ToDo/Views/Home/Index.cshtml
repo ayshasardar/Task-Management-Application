@@ -181,6 +181,10 @@
                 <form asp-action="DeleteComplete" method="post" asp-route-id="@Model.Filters.FilterString">
                     <a asp-action="Add" class="btn btn-success">Add New Task</a>
                     <button type="submit" class="btn btn-danger">Delete Completed Task</button>
+                    <a asp-controller="Categories" asp-action="Add"
+                       class="btn btn-outline-info">
+                        + Add New Category
+                    </a>
                 </form>
             </div>
         </div>

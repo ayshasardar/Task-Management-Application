@@ -17,8 +17,12 @@ public class CategoryService : ICategoryService
         return _context.Categories.ToList();
     }
 
-    public void Add(string name)
+    public bool Add(string name)
     {
+        var CategoryExist = _context.Categories.Any(e => e.Name.ToLower() == name.ToLower());
+        if (CategoryExist)
+            return false;
+
         // 👉 Create new category object
         var category = new Category
         {
@@ -29,5 +33,6 @@ public class CategoryService : ICategoryService
         // 👉 Save to DB
         _context.Categories.Add(category);
         _context.SaveChanges();
+        return true;
     }
 }

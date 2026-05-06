@@ -27,10 +27,20 @@ public class CategoriesController : Controller
             return View(vm);
 
         //Call service instead of DB directly
-        _categoryService.Add(vm.Name);
+        bool CategoryNotExist = _categoryService.Add(vm.Name);
+        if (CategoryNotExist)
+        {
+            TempData["ToastMessage"] = "Category added successfully";
+            TempData["ToastType"] = "success";
+            return RedirectToAction("Add", "Home");
+        }
+        else
+        {
+            TempData["ToastMessage"] = "Category already exist!";
+            TempData["ToastType"] = "error";
+            return View();
+        }
 
-        TempData["ToastMessage"] = "Category added successfully";
-
-        return RedirectToAction("Add", "Home");
+        
     }
 }
