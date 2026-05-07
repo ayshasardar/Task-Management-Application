@@ -119,6 +119,14 @@ namespace ToDoDemo.Controllers
 
             return RedirectToAction("Index");
         }
-
+        //remove below method after testing
+        public IActionResult TestError()
+        {
+            throw new Exception("Test exception");
+        }
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

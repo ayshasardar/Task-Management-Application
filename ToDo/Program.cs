@@ -27,12 +27,17 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    //Comment below line - if using custom middleware
+    //app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+//Serve CSS, JS, images first
+app.UseStaticFiles();
+//GLOBAL EXCEPTION MIDDLEWARE
+app.UseMiddleware<ToDoDemo.Middleware.ExceptionMiddleware>();
 app.UseRouting();
 
 app.UseAuthorization();
