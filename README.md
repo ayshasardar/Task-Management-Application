@@ -19,3 +19,8 @@ A full-stack MVC Task Management application built with ASP .Net Core
 - Pagination works seamlessly with existing filters
 - Page state is preserved using query-string parameters
 - Improves performance and user experience for large task lists
+
+### Exception Handling
+- Implemented global exception middleware with dual response handling to improve reliability and client experience.
+- JSON for APIs
+- UI views for MVC 
